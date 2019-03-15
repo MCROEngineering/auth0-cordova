@@ -169,6 +169,44 @@ CordovaAuth.prototype.authorize = function (parameters, callback) {
   });
 };
 
+CordovaAuth.prototype.logout = function (parameters, callback) {
+  if (!callback || typeof callback !== 'function') {
+    throw new Error('callback not specified or is not a function');
+  }
+
+  var self = this;
+
+  getAgent(function (err, agent) {
+    if (err) {
+      return callback(err);
+    }
+
+
+    var returnTo = encodeURIComponent(parameters.returnTo);
+    var redirectUrl = 'https://' + parameters.domain + '.auth0.com/v2/logout?client_id=' + parameters.clientId + '&returnTo=' + returnTo;
+    agent.open(redirectUrl, function (error, result) {
+      if (error != null) {
+        session.clean();
+        return callback(error);
+      }
+
+      if (result.event === 'closed' && getOS() === 'ios') {
+        session.clean();
+        return callback(new Error('user canceled'));
+      }
+
+      if (result.event !== 'loaded') {
+        // Ignore any other events.
+        return;
+      }
+
+      agent.close();
+
+      callback(null,{status:'ok'})
+    });
+  });
+};
+
 /**
  * Handler that must be called with the redirect url the browser tries to open after the OAuth flow is done.
  * To listen to that event, using cordova-plugin-customurlscheme, you need to register a callback in the method `window.handleOpenURL`
