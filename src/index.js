@@ -169,6 +169,19 @@ CordovaAuth.prototype.authorize = function (parameters, callback) {
   });
 };
 
+/**
+ * @callback logoutCallback
+ * @param {Error} [err] error returned by Auth0 with the reason of the Auth failure
+ */
+
+/**
+ * Opens the OS browser and redirects to `{domain}/v2/logout` url in order to initialize auth0 logout
+ *
+ * @method logout
+ * @param {Object} parameters
+ * @param {String} [parameters.returnTo] redirect URL upon logout
+ * @param {logoutCallback} callback
+ */
 CordovaAuth.prototype.logout = function (parameters, callback) {
   if (!callback || typeof callback !== 'function') {
     throw new Error('callback not specified or is not a function');
@@ -183,7 +196,7 @@ CordovaAuth.prototype.logout = function (parameters, callback) {
 
 
     var returnTo = encodeURIComponent(parameters.returnTo);
-    var redirectUrl = 'https://' + parameters.domain + '.auth0.com/v2/logout?client_id=' + parameters.clientId + '&returnTo=' + returnTo;
+    var redirectUrl = 'https://' + self.domain + '/v2/logout?client_id=' + self.clientId + '&returnTo=' + returnTo;
     agent.open(redirectUrl, function (error, result) {
       if (error != null) {
         session.clean();
