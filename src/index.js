@@ -115,11 +115,6 @@ CordovaAuth.prototype.authorize = function (parameters, callback) {
         }
       }
 
-      if (result.event !== 'loaded') {
-        // Ignore any other events.
-        return;
-      }
-
       session.start(function (sessionError, redirectUrl) {
         if (sessionError != null) {
           callback(sessionError);
@@ -208,6 +203,7 @@ CordovaAuth.prototype.logout = function (parameters, callback) {
         return callback(new Error('user canceled'));
       }
 
+      session.clean();
       agent.close();
 
       callback(null,{status:'ok'})
