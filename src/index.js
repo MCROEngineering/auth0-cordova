@@ -208,11 +208,6 @@ CordovaAuth.prototype.logout = function (parameters, callback) {
         return callback(new Error('user canceled'));
       }
 
-      if (result.event !== 'loaded') {
-        // Ignore any other events.
-        return;
-      }
-
       agent.close();
 
       callback(null,{status:'ok'})
