@@ -10,7 +10,8 @@ Session.closing = function () {
 };
 
 Session.start = function (handler) {
-  Session.current(new Error('Only one instance of auth can happen at a time'));
+  // Session.current(new Error('Only one instance of auth can happen at a time'));
+  Session.clean(); // clean previous session open
   Session.current = handler;
 };
 
